@@ -1,5 +1,9 @@
 package com.example.testeableapp
 
+import androidx.compose.ui.semantics.SemanticsActions
+import androidx.compose.ui.semantics.SemanticsPropertyKey
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performTextInput
@@ -9,7 +13,8 @@ import com.example.testeableapp.ui.Screens.TipCalculatorScreen
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.swipeRight
 import androidx.compose.ui.test.performClick
-
+import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.performSemanticsAction
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.Assert.*
@@ -31,10 +36,9 @@ class TipCalculatorUITest {
             TipCalculatorScreen()
         }
 
-        composeTestRule.onNodeWithText("Monto de la cuenta").performTextInput("100")
-        composeTestRule.onNodeWithText("Redondear propina").performClick()
-
-        composeTestRule.onNodeWithText("Propina: $15.00").assertExists()
+        composeTestRule.onNodeWithTag("billInput").performTextInput("100")
+        composeTestRule.onNodeWithTag("roundUpCheckbox").performClick()
+        composeTestRule.onNodeWithTag("tipResult").assertTextEquals("Propina: $15.00")
     }
 
     @Test
@@ -43,11 +47,25 @@ class TipCalculatorUITest {
             TipCalculatorScreen()
         }
 
-        composeTestRule.onNodeWithText("Monto de la cuenta").performTextInput("100")
+        composeTestRule.onNodeWithTag("billInput").performTextInput("100")
 
-        composeTestRule.onNodeWithText("Porcentaje de propina: 15%").performTouchInput {
-            swipeRight(startX = 0f, endX = 0.5f)
+        composeTestRule.onNodeWithTag("tipSlider").performSemanticsAction(SemanticsActions.SetProgress) {
+            it(25.0f)
         }
 
+        composeTestRule.onNodeWithTag("tipResult").assertTextEquals("Propina: $25.00")
+    }
+
+    @Test
+    fun validarElementosUI_visibles() {
+        composeTestRule.setContent {
+            TipCalculatorScreen()
+        }
+
+        composeTestRule.onNodeWithTag("billInput").assertIsDisplayed()
+        composeTestRule.onNodeWithTag("tipSlider").assertIsDisplayed()
+        composeTestRule.onNodeWithTag("roundUpCheckbox").assertIsDisplayed()
+        composeTestRule.onNodeWithTag("plusButton").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Número de personas: 1").assertIsDisplayed()
     }
 }

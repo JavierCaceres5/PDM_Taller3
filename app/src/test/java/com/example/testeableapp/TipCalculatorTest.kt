@@ -15,12 +15,14 @@ class TipCalculatorTest {
     fun `calcula propina con 37% y redondeo`() {
         val tip = calculateTip(amount = 150.0, tipPercent = 37, roundUp = true)
         val expected = ceil(150 * 0.37)
+        println("TIP CALCULATED: $tip, EXPECTED: $expected")
         assertEquals(expected, tip, 0.001)
     }
 
     @Test
     fun `cantidad negativa debe retornar 0`() {
         val tip = calculateTip(amount = -50.0, tipPercent = 15, roundUp = false)
+        println("TIP CALCULATED: $tip (Expected: 0.0)")
         assertEquals(0.0, tip,0.001)
     }
 
@@ -29,6 +31,7 @@ class TipCalculatorTest {
         val bill = 120.0
         val tip = calculateTip(bill, 10, false)
         val totalPerPerson = (bill + tip) / 4
+        println("TOTAL PER PERSON: $totalPerPerson (Expected: 33.0)")
         assertEquals(33.0, totalPerPerson, 0.001)
     }
 }
