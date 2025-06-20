@@ -15,6 +15,8 @@ import androidx.compose.ui.test.swipeRight
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performSemanticsAction
+import androidx.compose.ui.test.performTextClearance
+import androidx.compose.ui.test.swipeLeft
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.Assert.*
@@ -68,4 +70,29 @@ class TipCalculatorUITest {
         composeTestRule.onNodeWithTag("plusButton").assertIsDisplayed()
         composeTestRule.onNodeWithText("Número de personas: 1").assertIsDisplayed()
     }
+
+    @Test
+    fun verificarCamposDiferentesDeO(){
+        composeTestRule.setContent {
+            TipCalculatorScreen()
+        }
+        composeTestRule.onNodeWithText("Monto de la cuenta").performTextClearance()
+        composeTestRule.onNodeWithTag("tipSlider").performTouchInput { swipeLeft() }
+        composeTestRule.onNodeWithText("-").performClick()
+
+        composeTestRule.onNodeWithTag("tipResult").assertTextEquals("Propina: $0.00")
+        composeTestRule.onNodeWithTag("totalPerPersonResult").assertTextEquals("Total por persona: $0.00")
+        }
+
+    @Test
+    fun validarLimiteInferior_CantidadDePersonas_Test(){
+
+        composeTestRule.setContent {
+            TipCalculatorScreen()
+        }
+        repeat(3) {
+            composeTestRule.onNodeWithText("-").performClick()
+        }
+        composeTestRule.onNodeWithText("1").assertExists()
+        }
 }

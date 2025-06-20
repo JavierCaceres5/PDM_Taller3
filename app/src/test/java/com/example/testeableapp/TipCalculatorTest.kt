@@ -34,4 +34,24 @@ class TipCalculatorTest {
         println("TOTAL PER PERSON: $totalPerPerson (Expected: 33.0)")
         assertEquals(33.0, totalPerPerson, 0.001)
     }
+
+    @Test
+    fun CalcularPropinaSinRedondeo(){
+        val tip = calculateTip(amount = 125.0, tipPercent = 15, roundUp = false)
+        val expected = 125.0 * 15 / 100
+        assertEquals(tip, expected, 0.001)
+    }
+
+    @Test
+    fun CalcularPropinaConMontoCero(){
+
+        val amount = 0.0
+        val tipPercent = 20
+        val roundUp = false
+
+        val tip = calculateTip(amount, tipPercent, roundUp)
+
+        val expectedTip = 0.0
+        assertEquals(expectedTip, tip, 0.001)
+        }
 }
